@@ -20,6 +20,23 @@ def bt_boot():
 		if vuryb:
 			print("\r" + " " * 20, end="")
 atexit.register(go_to_old_dir)
+
+oj = False
+def pipe(symbol=False, stm="open", app=False):
+	global oj
+	if stm == "open":
+		if app:
+			pos = symbol.rfind(">>") + 2
+		else:
+			pos = symbol.rfind(">") + 1
+		file_pipe = symbol[pos:].strip()
+		if app == False:
+			oj = open(file_pipe, "w")
+		else:
+			oj = open(file_pipe, "a")
+	else:
+		oj.close()
+		
 def kill(excepti):
 	global vuryb
 	print("\r" + " " * 50, end="")
@@ -82,8 +99,22 @@ while True:
 					f = t.rfind(".")
 					print(t[:f])
 		else:
+			mkvn = False
 			try:
 				argus = ""
+				if inp.count(">") > 0:
+					if inp.count(">>") > 0:
+						pipe(inp, app=True)
+						pos_inp = inp.rfind(">>")
+					else:
+						pipe(inp)
+						pos_inp = inp.rfind(">")
+					inp = inp[:pos_inp]
+					ostdout = sys.stdout
+					ostderr = sys.stderr
+					sys.stdout = oj
+					sys.stderr = oj
+					mkvn = True
 				if inp.count(" ") > 0:
 					ninp = inp.split()
 					moduls = ninp[0]
@@ -98,5 +129,10 @@ while True:
 					mod.start_module(argus)
 			except Exception as excx:
 				print(excx)
+			finally:
+				if mkvn:
+					pipe(stm="close")
+					sys.stdout = ostdout
+					sys.stderr = ostderr
 	except Exception as exc:
 		kill(exc)
