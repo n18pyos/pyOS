@@ -213,7 +213,8 @@ while True:
 			finally:
 				if mkvn:
 					pipe(stm="close")
-					sys.stdout = ostdout
-					sys.stderr = ostderr
+					if not vbn:
+						sys.stdout = ostdout
+						sys.stderr = ostderr
 	except Exception as exc:
 		kill(exc)
