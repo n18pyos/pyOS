@@ -1,6 +1,6 @@
 info = "wc - программа для подсчета линий/символов\nwc (argument) (file)\n"
 
-def start_module(args):
+def start_module(args, pipeline=False):
 	lines = False
 	char = False
 	bytess = False
@@ -15,7 +15,10 @@ def start_module(args):
 			bytess = True
 		else:
 			file = i
-	fo = open(file, "r")
+	if not pipeline:
+		fo = open(file, "r")
+	else:
+		fo = pipeline.split("\n")
 	for i in fo:
 		if lines:
 			schet += 1
@@ -24,4 +27,7 @@ def start_module(args):
 				schet += 1
 		elif bytess:
 			schet += len(i.encode())
-	print(file, " ", schet)
+	if not pipeline:
+		print(file, " ", schet)
+	else:
+		print(" ", schet)

@@ -25,7 +25,6 @@ atexit.register(go_to_old_dir)
 oj = False
 def pipe(symbol=False, stm="open", app=False):
 	global oj
-	print(symbol, stm, app)
 	if stm == "open":
 		if app:
 			pos = symbol.rfind(">>") + 2
@@ -126,12 +125,14 @@ while True:
 					f = t.rfind(".")
 					print(t[:f])
 		else:
+			fullpin = inp
+			vbn = False
 			mkvn = False
 			try:
 				argus = ""
 				mod = False
 				def module_start(use_pipeline=False):
-					global mod
+					global mod, vbn
 					pipeline_dat = ""
 					if not use_pipeline:
 						mod = __import__(f"libs.{moduls}", fromlist=["*"])
@@ -140,6 +141,7 @@ while True:
 						else:
 							mod.start_module(argus)
 					elif use_pipeline == True:
+						vbn = True
 						longoflist = len(pipeline(inp)) - 1
 						schtt = 0
 						for _i in pipeline(inp):
@@ -160,7 +162,16 @@ while True:
 									res = openline(option="close")
 									pipeline_dat = res.getvalue()
 								elif schtt == longoflist + 1:
+									if mkvn:
+										if fullpin.count(">>") > 0:
+											pipe(fullpin, stm="open", app=True)
+										elif fullpin.count(">") > 0:
+											pipe(fullpin, stm="open", app=False)
+										old_stout = sys.stdout
+										sys.stdout = oj
 									mod.start_module(_i,  pipeline_dat)
+									if mkvn:
+										sys.stdout = old_stout
 								else:
 									openline()
 									mod.start_module(_i,  pipeline_dat)
@@ -170,6 +181,10 @@ while True:
 					else:
 						mod.start_module(argus)
 				if inp.count(">") > 0:
+					mkvn = True
+				if inp.count("|") > 0:
+					vbn = True
+				if inp.count(">") > 0 and not vbn:
 					if inp.count(">>") > 0:
 						pipe(inp, app=True)
 						pos_inp = inp.rfind(">>")
