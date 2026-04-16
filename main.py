@@ -4,6 +4,7 @@ import os
 import atexit
 import time
 import toml
+import io
 
 vuryb = True
 oldir = os.getcwd()
@@ -24,6 +25,7 @@ atexit.register(go_to_old_dir)
 oj = False
 def pipe(symbol=False, stm="open", app=False):
 	global oj
+	print(symbol, stm, app)
 	if stm == "open":
 		if app:
 			pos = symbol.rfind(">>") + 2
@@ -36,7 +38,31 @@ def pipe(symbol=False, stm="open", app=False):
 			oj = open(file_pipe, "a")
 	else:
 		oj.close()
-		
+
+def pipeline(pipelines):
+	pipe_temp = pipelines.split("|")
+	pipe_very_temp = []
+	for i in pipe_temp:
+		pipe_very_temp.append(i.strip())
+	pipe_temp = pipe_very_temp
+	return pipe_temp
+
+outio = False
+ostdderr = False
+ostddout = False
+def openline(option="open"):
+	global outio, ostdderr, ostddout
+	if option == "open":
+		outio = io.StringIO()
+		ostddout = sys.stdout
+		ostdderr = sys.stderr
+		sys.stdout = outio
+		sys.stderr = outio
+	else:
+		sys.stdout = ostddout
+		sys.stderr = ostdderr
+		return outio
+
 def kill(excepti):
 	global vuryb
 	print("\r" + " " * 50, end="")
@@ -53,6 +79,7 @@ try:
 	sys_libs = toml_read["sys_path"]
 	u_libs = toml_read["module_path"]
 	sys_info = toml_read["sys_info_path"]
+	to_read.close()
 	if os.path.exists(sys_libs) and os.path.exists(u_libs) and os.path.exists(sys_info):
 		pass
 	else:
@@ -102,6 +129,46 @@ while True:
 			mkvn = False
 			try:
 				argus = ""
+				mod = False
+				def module_start(use_pipeline=False):
+					global mod
+					pipeline_dat = ""
+					if not use_pipeline:
+						mod = __import__(f"libs.{moduls}", fromlist=["*"])
+						if getattr(mod, "cavc", False) == True:
+							mod.start_module(inp)
+						else:
+							mod.start_module(argus)
+					elif use_pipeline == True:
+						longoflist = len(pipeline(inp)) - 1
+						schtt = 0
+						for _i in pipeline(inp):
+							schtt += 1
+							lib = _i.split(" ")
+							mod = __import__(f"libs.{lib[0]}", fromlist=["*"])
+							if True:
+								if getattr(mod, "cavc", False) == True:
+									pass
+								else:
+									if len(_i.split(" ")) > 1:
+										_i = _i.split(" ")[1:]
+									else:
+										_i = []
+								if schtt == 1:
+									openline()
+									mod.start_module(_i)
+									res = openline(option="close")
+									pipeline_dat = res.getvalue()
+								elif schtt == longoflist + 1:
+									mod.start_module(_i,  pipeline_dat)
+								else:
+									openline()
+									mod.start_module(_i,  pipeline_dat)
+									res = openline(option="close")
+									pipeline_dat = res.getvalue()
+									
+					else:
+						mod.start_module(argus)
 				if inp.count(">") > 0:
 					if inp.count(">>") > 0:
 						pipe(inp, app=True)
@@ -122,11 +189,10 @@ while True:
 				else:
 					moduls = inp
 					argus = []
-				mod = __import__(f"libs.{moduls}", fromlist=["*"])
-				if getattr(mod, "cavc", False) == True:
-					mod.start_module(inp)
+				if inp.count("|") < 1:
+					module_start()
 				else:
-					mod.start_module(argus)
+					module_start(use_pipeline=True)
 			except Exception as excx:
 				print(excx)
 			finally:
