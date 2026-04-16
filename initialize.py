@@ -3,7 +3,7 @@ import toml
 import platform
 from datetime import datetime
 python = platform.python_version()
-vers = "0.4.1"
+vers = "0.5"
 osn = "pyOS"
 ydra = os.cpu_count()
 archh = platform.machine()
