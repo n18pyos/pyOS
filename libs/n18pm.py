@@ -4,6 +4,7 @@ import subprocess
 import toml
 
 info = "n18pm - пакетный менеджер для псевдо ос pyOS\n"
+trace = True
 
 oldir = os.getcwd()
 path = os.environ.get("U_LIBS_PATH")
@@ -36,9 +37,53 @@ def start_module(args):
 			subprocess.run(["git", "clone", furl])
 			if os.path.exists(args[1]):
 				lst = []
+				lbst = []
+				vrst = None
+				aut = None
+				contact = None
+				desc = None
 				if os.path.exists(f"{args[1]}.toml"):
 					os.remove(f"{args[1]}.toml")
 				os.chdir(args[1])
+				if os.path.exists("pymodule.toml"):
+					try:
+						ip = open("pymodule.toml", "r")
+						ipp = toml.load(ip)
+						ip.close()
+						if ipp.get("libs", False):
+							if not os.path.exists(os.path.join(path, "libs")):
+								os.mkdir(os.path.join(path, "libs"))
+								with open(os.environ.get("SETTING_PATH"), "a") as ftemp:
+									ftemp.write(f"\nmodlib = '{os.path.join(path, 'libs')}'")
+							for _u in ipp.get("libs"):
+								if not os.path.exists(os.path.join(path, "libs", _u)):
+									shutil.move(_u, os.path.join(path, "libs", _u))
+									lbst.append(os.path.abspath(os.path.join(path, "libs", _u)))
+									print("libs: ", _u, " is finished")
+								else:
+									if input(f"библиотека  {_u} уже существует, перезаписать ее? y/n  ").lower() == "y":
+										os.remove(os.path.join(path, "libs", _u))
+										shutil.move(_u, os.path.join(path, "libs", _u))
+										lbst.append(os.path.abspath(_u))
+										print("libs: ", _u, " is finished")
+									else:
+										pass
+						else:
+							print("libs: not libs to install")
+						if ipp.get("version", False):
+							print("version: ", ipp.get("version"))
+							vrst = ipp.get("version")
+						if ipp.get("author", False):
+							aut = ipp.get("author")
+						if ipp.get("contact", False):
+							contact = ipp.get("contact")
+						if ipp.get("desc", False):
+							desc = ipp.get("desc")
+					except Exception as evx:
+						print("ошибка! ", evx)
+						return
+				else:
+					print("Warning! module pymodule.toml is not found")
 				for i in os.listdir():
 					if i.endswith(".py"):
 						if os.path.exists(f"{path}/{i}"):
@@ -67,8 +112,15 @@ def start_module(args):
 				else:
 					os.system("pip3 install -r requirements.txt --break-system-packages")
 				os.remove("requirements.txt")
+			if os.path.exists("pymodule.toml"):
+				os.remove("pymodule.toml")
 			progs = {
-			"files": lst
+			"files": lst,
+			"libs": lbst,
+			"version": vrst,
+			"author": aut,
+			"contact": contact,
+			"desc": desc
 			}
 			os.chdir(path)
 			shutil.rmtree(args[1])
@@ -83,8 +135,15 @@ def start_module(args):
 				if inn.lower() == "y":
 					op = open(f"{args[1]}.toml", "r")
 					toml_td = toml.load(op)
+					if toml_td.get("version", False) and toml_td.get("version", False) is not None:
+						print("removing ", args[1], " ", toml_td.get("version"))
+					else:
+						print("removing ", args[1])
 					for e in toml_td["files"]:
 						os.remove(f"{e}")
+					if toml_td.get("libs", False) and len(toml_td.get("libs", False)) > 0:
+						for e in toml_td["libs"]:
+							os.remove(e)
 					op.close()
 					os.remove(f"{args[1]}.toml")
 			else:

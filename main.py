@@ -5,6 +5,12 @@ import atexit
 import time
 import toml
 import io
+import traceback
+
+try:
+	import readline
+except Exception as exv:
+	print("Warning! error with readline ", exv)
 
 vuryb = True
 oldir = os.getcwd()
@@ -85,11 +91,13 @@ try:
 		kill("system libs is not finded")
 except Exception as exc:
 	kill(exc)
+open(".hist", "r").close()
+os.environ["SETTING_PATH"] = os.path.abspath("sys.toml")
 os.environ["U_LIBS_PATH"] = u_libs
 os.environ["SYS_LIBS_PATH"] = sys_libs
 os.environ["SYS_INFO_PATH"] = sys_info
 os.environ["MAIN_FILE_PATH"] = __file__
-
+os.environ["HIST_FILE"] = os.path.abspath(".hist")
 vuryb = False
 time.sleep(0.9)
 print("\r" + " " * 50, end="")
@@ -97,6 +105,8 @@ print("system start".upper())
 while True:
 	try:
 		inp = input(":  ")
+		hist = open(os.environ.get("HIST_FILE"), "a")
+		hist.write(f"{inp}\n")
 		if inp == "help":
 			print("this is pyOS its is not a real OS")
 		elif inp == "exit":
@@ -210,6 +220,8 @@ while True:
 					module_start(use_pipeline=True)
 			except Exception as excx:
 				print(excx)
+				if getattr(mod, "trace", False) == True:
+					traceback.print_exc()
 			finally:
 				if mkvn:
 					pipe(stm="close")
@@ -218,3 +230,10 @@ while True:
 						sys.stderr = ostderr
 	except Exception as exc:
 		kill(exc)
+
+def veturn():
+	try:
+		hist.close()
+	except:
+		pass
+atexit.register(veturn)

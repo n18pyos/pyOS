@@ -1,0 +1,101 @@
+ls
+ls | echo
+echo "tele\nvizor"
+exit
+n18 help
+exit
+n18 help
+n18pm install easy-get
+ls
+cd libs
+ls
+python main.pyexiei
+exit
+n18 remove easyexit
+exit
+n18pm remove easy-get
+ls libs
+n18 install easy-get
+cd libs
+n18pm help
+n18pm install easy-get
+ls
+cd libs
+ls
+cat mhsit
+rm .hist
+ls
+ls
+ls
+ls
+ls
+cat .hist
+ls
+cd ..
+cd libs
+history
+exit
+libs
+cat sys.toml | grep path
+cat /storage/emulated/0/pyOS/libs/sys_libs/info.toml
+ls
+cat pipeline.md
+cat initialize.py
+cat .hist
+ls
+exit
+n18pm install n18pm-test tsxchaser-art
+n18pm install test-n18pm tsxchaser-art
+exit
+ls
+n18pm install test-n18pm tsxchaser-art
+exit
+n18pm install test-n18pm tsxchaser-art
+ls
+cd libs
+ls
+cd libs
+ls
+cat lib
+ls
+cd ..
+ls
+ls
+cat test-n18pm.toml
+ls
+exit
+cat sys.toml
+n18pm install test-n18pm tsxchaser-art
+ls
+test-n18pm
+cd libs
+ls
+cd libs
+ls
+cd ..
+cat test-n18pm.toml
+ls
+exit
+n18pm remove test-n18pm
+ls libs
+ls libs
+cd libs
+ls
+ls
+pwd
+rm -r libs
+ls
+cd ..
+cd libs
+ls
+rm easy-get.toml
+rm easy-get.py
+ls
+rm -r __pycache__
+ls
+history
+echo "hi\nlol\ntip" | grep lol
+ls
+rm -r __pycache__
+ls
+exit

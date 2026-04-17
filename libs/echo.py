@@ -5,7 +5,7 @@ cavc = True
 def start_module(args, pipeline=False):
 	if not pipeline:
 		args = shlex.split(args)
-		text = args[1]
+		text = args[1].encode().decode("unicode_escape")
 		print(text)
 	else:
 		text = pipeline.split("\n")
