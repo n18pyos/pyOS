@@ -91,7 +91,11 @@ try:
 		kill("system libs is not finded")
 except Exception as exc:
 	kill(exc)
-open(".hist", "r").close()
+try:
+	h = open(".hist", "r")
+	h.close()
+except:
+	pass
 os.environ["SETTING_PATH"] = os.path.abspath("sys.toml")
 os.environ["U_LIBS_PATH"] = u_libs
 os.environ["SYS_LIBS_PATH"] = sys_libs
