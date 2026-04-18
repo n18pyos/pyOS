@@ -110,7 +110,7 @@ while True:
 	try:
 		inp = input(":  ")
 		hist = open(os.environ.get("HIST_FILE"), "a")
-		hist.write(f"{inp}\n")
+		hist.write(f"\n{inp}")
 		if inp == "help":
 			print("this is pyOS its is not a real OS")
 		elif inp == "exit":
